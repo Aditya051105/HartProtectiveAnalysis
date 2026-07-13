@@ -1,94 +1,915 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>Prediction Result - HeartSecureX</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Result — HeartSecure X</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
   <style>
-    /* ---------------- GLOBAL STYLES ---------------- */
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #0a0a0f, #1c1c3c);
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
       margin: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      padding: 0;
+    }
+
+    :root {
+      --red: #C0392B;
+      --red-dk: #922B21;
+      --red-lt: #FADBD8;
+      --cream: #FDF6F0;
+      --warm: #F9EBE0;
+      --charcoal: #1C1C1E;
+      --slate: #4A4A4A;
+      --mid: #8A8A8A;
+      --border: rgba(28, 28, 30, 0.10);
+      --card: #FFFFFF;
+      --green: #1E6B45;
+      --green-lt: #E8F8F0;
+      --amber: #B7770D;
+      --amber-lt: #FEF3C7;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--charcoal);
       min-height: 100vh;
     }
 
-    .container {
-      background: rgba(4, 3, 75, 0.9);
-      padding: 35px 40px;
-      border-radius: 20px;
-      box-shadow: 0 0 40px #bb00ff, 0 0 80px #00ffd0;
-      width: 400px;
-      text-align: center;
-      animation: glowpulse 2.5s infinite alternate;
+    /* NAV */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 5vw;
+      height: 64px;
+      background: rgba(253, 246, 240, 0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
     }
 
-    @keyframes glowpulse {
-      0% { box-shadow: 0 0 20px #00ffd0, 0 0 40px #bb00ff90; }
-      100% { box-shadow: 0 0 40px #bb00ff, 0 0 60px #00ffd050; }
-    }
-
-    h2 {
-      color: #00ffd0;
-      margin-bottom: 15px;
-      font-size: 2rem;
-    }
-
-    h3 {
-      font-size: 1.5rem;
-      font-weight: 600;
-      margin: 20px 0;
-      padding: 10px 15px;
-      border-radius: 12px;
-      color: #fff;
-      /* Color code based on prediction dynamically */
-      background: {% if prediction == "High Risk" %}#e74c3c{% else %}#2ecc71{% endif %};
-      box-shadow: 0 0 10px {% if prediction == "High Risk" %}#e74c3c{% else %}#2ecc71{% endif %};
-    }
-
-    button {
-      margin-top: 20px;
-      width: 100%;
-      padding: 12px;
-      background: #bb00ff;
-      color: #fff;
-      font-size: 1rem;
-      font-weight: 600;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-
-    button:hover {
-      background: #e600ff;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 15px rgba(187, 0, 255, 0.5);
-    }
-
-    a {
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.15rem;
+      color: var(--charcoal);
       text-decoration: none;
     }
 
-    /* Responsive */
-    @media(max-width: 500px) {
-      .container { width: 90%; padding: 30px; }
-      h2 { font-size: 1.6rem; }
-      h3 { font-size: 1.3rem; }
+    .pulse {
+      width: 12px;
+      height: 12px;
+      background: var(--red);
+      border-radius: 50%;
+      animation: hb 1.4s infinite;
+    }
+
+    @keyframes hb {
+
+      0%,
+      100% {
+        transform: scale(1)
+      }
+
+      14% {
+        transform: scale(1.35)
+      }
+
+      28% {
+        transform: scale(1)
+      }
+
+      42% {
+        transform: scale(1.2)
+      }
+    }
+
+    /* RESULT PAGE */
+    .result-page {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 4rem 2rem 6rem;
+    }
+
+    .result-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--mid);
+      margin-bottom: 0.75rem;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .result-headline {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2.2rem, 4vw, 3.2rem);
+      line-height: 1.1;
+      color: var(--charcoal);
+      margin-bottom: 2.5rem;
+      animation: fadeUp 0.5s ease both 0.1s;
+    }
+
+    /* MAIN RESULT CARD */
+    .result-card {
+      border-radius: 28px;
+      border: 2px solid var(--result-color, var(--border));
+      background: var(--card);
+      padding: 3rem;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 2rem;
+      animation: fadeUp 0.6s ease both 0.2s;
+      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.06);
+    }
+
+    .result-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: var(--result-color, var(--red));
+    }
+
+    .result-card .bg-icon {
+      position: absolute;
+      right: 2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 7rem;
+      opacity: 0.06;
+      pointer-events: none;
+      line-height: 1;
+    }
+
+    .diagnosis-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--result-lt, var(--red-lt));
+      color: var(--result-text, var(--red-dk));
+      border-radius: 100px;
+      padding: 0.4rem 1.1rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      margin-bottom: 1rem;
+    }
+
+    .diagnosis-badge::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: var(--result-color, var(--red));
+      border-radius: 50%;
+    }
+
+    .diagnosis-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2.4rem;
+      color: var(--charcoal);
+      margin-bottom: 0.75rem;
+    }
+
+    .diagnosis-description {
+      font-size: 1rem;
+      color: var(--slate);
+      line-height: 1.75;
+      max-width: 520px;
+      margin-bottom: 1.5rem;
+    }
+
+    .diagnosis-confidence {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .conf-label {
+      font-size: 0.8rem;
+      color: var(--mid);
+    }
+
+    .conf-bar {
+      flex: 1;
+      height: 6px;
+      background: var(--border);
+      border-radius: 100px;
+      overflow: hidden;
+      max-width: 200px;
+    }
+
+    .conf-fill {
+      height: 100%;
+      border-radius: 100px;
+      background: var(--result-color, var(--red));
+      width: 0%;
+      transition: width 1s ease 0.8s;
+    }
+
+    /* INFO GRID */
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      animation: fadeUp 0.6s ease both 0.35s;
+    }
+
+    .info-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 1.5rem 1.6rem;
+    }
+
+    .info-card h3 {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--mid);
+      margin-bottom: 0.75rem;
+    }
+
+    .info-card ul {
+      list-style: none;
+    }
+
+    .info-card ul li {
+      font-size: 0.875rem;
+      color: var(--slate);
+      padding: 0.35rem 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      line-height: 1.5;
+    }
+
+    .info-card ul li:last-child {
+      border-bottom: none;
+    }
+
+    .info-card ul li::before {
+      content: '→';
+      color: var(--result-color, var(--red));
+      flex-shrink: 0;
+    }
+
+    /* NEXT STEPS */
+    .next-steps {
+      background: var(--charcoal);
+      border-radius: 20px;
+      padding: 2rem 2.2rem;
+      margin-bottom: 2rem;
+      animation: fadeUp 0.6s ease both 0.5s;
+    }
+
+    .next-steps h3 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.3rem;
+      color: #fff;
+      margin-bottom: 1.2rem;
+    }
+
+    .steps-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    .step-box {
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 14px;
+      padding: 1.2rem 1rem;
+    }
+
+    .step-box .icon {
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .step-box h4 {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .step-box p {
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, 0.5);
+      line-height: 1.5;
+    }
+
+    /* ACTIONS */
+    .result-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      animation: fadeUp 0.6s ease both 0.6s;
+    }
+
+    .btn-primary {
+      background: var(--red);
+      color: #fff;
+      border: none;
+      border-radius: 100px;
+      padding: 0.85rem 2rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: var(--red-dk);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--charcoal);
+      border: 1.5px solid var(--border);
+      border-radius: 100px;
+      padding: 0.85rem 2rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--charcoal);
+    }
+
+    /* DISCLAIMER */
+    .disclaimer {
+      margin-top: 3rem;
+      padding: 1rem 1.4rem;
+      background: var(--amber-lt);
+      border-radius: 12px;
+      font-size: 0.8rem;
+      color: var(--amber);
+      line-height: 1.6;
+      animation: fadeUp 0.6s ease both 0.7s;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .result-card {
+        padding: 1.8rem;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .steps-row {
+        grid-template-columns: 1fr;
+      }
+
+      .result-page {
+        padding: 2rem 1rem 4rem;
+      }
     }
   </style>
 </head>
+
 <body>
-  <div class="container">
-    <h2>Prediction Result</h2>
-    <h3>{{ prediction }}</h3>
-    <a href="/"><button><i class="fa-solid fa-arrow-left"></i> Go Back</button></a>
+
+  <nav>
+    <a href="/" class="nav-logo">
+      <div class="pulse"></div>
+      HeartSecure&nbsp;<strong>X</strong>
+    </a>
+  </nav>
+
+  <div class="result-page">
+    <div class="result-label">Assessment Complete</div>
+    <h1 class="result-headline">Your cardiac risk profile</h1>
+
+    <!-- MAIN RESULT CARD (dynamically styled by JS) -->
+    <div class="result-card" id="resultCard">
+      <div class="bg-icon" id="bgIcon">🫀</div>
+      <div class="diagnosis-badge" id="diagnosisBadge">Analysing...</div>
+      <div class="diagnosis-name" id="diagnosisName">{{ prediction }}</div>
+      <p class="diagnosis-description" id="diagnosisDesc">Loading your personalised cardiac assessment...</p>
+      <div class="diagnosis-confidence">
+        <span class="conf-label">Model confidence</span>
+        <div class="conf-bar">
+          <div class="conf-fill" id="confFill"></div>
+        </div>
+        <span class="conf-label" id="confPct">—</span>
+      </div>
+    </div>
+
+    <!-- INFO GRID -->
+    <div class="info-grid">
+      <div class="info-card">
+        <h3>About this condition</h3>
+        <ul id="aboutList">
+          <li>Loading condition details...</li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <h3>Common risk factors</h3>
+        <ul id="riskList">
+          <li>Loading risk factors...</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- NEXT STEPS -->
+    <div class="next-steps">
+      <h3>Recommended next steps</h3>
+      <div class="steps-row" id="stepsRow">
+        <div class="step-box">
+          <div class="icon">🩺</div>
+          <h4>Consult your doctor</h4>
+          <p>Share this result with your GP or cardiologist for clinical evaluation.</p>
+        </div>
+        <div class="step-box">
+          <div class="icon">📋</div>
+          <h4>Track your vitals</h4>
+          <p>Monitor blood pressure, cholesterol, and blood sugar regularly.</p>
+        </div>
+        <div class="step-box">
+          <div class="icon">🏃</div>
+          <h4>Lifestyle improvements</h4>
+          <p>Exercise, balanced diet, and stress management reduce cardiac risk.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="result-actions">
+      <a href="/symptoms" class="btn-primary">Run another assessment</a>
+      <a href="/" class="btn-secondary">← Back to home</a>
+    </div>
+
+    <!-- DISCLAIMER -->
+    <div class="disclaimer">
+      ⚠️ <strong>Medical disclaimer:</strong> HeartSecure X is an AI-powered screening tool for educational and
+      informational purposes only. This result is not a clinical diagnosis. Please consult a licensed medical
+      professional before making any health decisions based on this output.
+    </div>
   </div>
 
-  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <script>
+    // Map prediction text → visual config
+    const conditionData = {
+      'Healthy': {
+        color: '#27AE60',
+        lt: '#E8F8F0',
+        text: '#1E6B45',
+        badge: 'Healthy — No significant risk',
+        icon: '✅',
+        desc: 'Based on your inputs, HeartSecure X did not detect significant cardiac risk markers. Maintaining your current lifestyle and continuing regular health check-ups is recommended.',
+        about: ['No significant cardiac abnormalities detected', 'Risk profile within normal ranges', 'Preventive care continues to be important', 'Regular monitoring still advised annually'],
+        risks: ['Age-related risk increases naturally', 'Sustained stress can affect heart health', 'Diet and exercise remain key protective factors', 'Genetic predispositions may not be fully captured'],
+        confidence: 88
+      },
+      'Angina': {
+        color: '#E67E22',
+        lt: '#FEF3C7',
+        text: '#B7770D',
+        badge: 'Condition Detected',
+        icon: '💛',
+        desc: 'The model identified markers consistent with Angina — chest pain or discomfort caused by reduced blood flow to the heart muscle. This is often a symptom of coronary artery disease.',
+        about: ['Chest pain triggered by physical or emotional stress', 'Usually temporary but should not be ignored', 'Often indicates underlying coronary artery narrowing', 'Stable angina is manageable with proper treatment'],
+        risks: ['High cholesterol and blood pressure', 'Smoking and sedentary lifestyle', 'Diabetes and obesity are significant factors', 'Family history of heart disease'],
+        confidence: 79
+      },
+      'Arrhythmia': {
+        color: '#8E44AD',
+        lt: '#F3E5F5',
+        text: '#6A1B9A',
+        badge: 'Condition Detected',
+        icon: '⚡',
+        desc: 'Your profile shows indicators associated with Arrhythmia — an irregular heartbeat. This can range from benign to serious, and clinical evaluation is strongly advised.',
+        about: ['Irregular, too fast or too slow heartbeat', 'Many types exist from benign to serious', 'Symptoms may include palpitations or dizziness', 'Treatable with medication, lifestyle, or procedures'],
+        risks: ['Electrolyte imbalances affecting heart rhythm', 'High blood pressure over time', 'Excessive stress and poor sleep quality', 'Stimulant use including caffeine and alcohol'],
+        confidence: 74
+      },
+      'Coronary Artery Disease': {
+        color: '#C0392B',
+        lt: '#FADBD8',
+        text: '#922B21',
+        badge: 'Condition Detected',
+        icon: '🫀',
+        desc: 'Your assessment suggests risk markers for Coronary Artery Disease (CAD) — a condition where the main blood vessels supplying the heart become damaged or diseased due to plaque buildup.',
+        about: ['Plaque buildup narrows coronary arteries', 'Reduces blood and oxygen flow to heart muscle', 'Leading cause of heart attacks worldwide', 'Can be managed with lifestyle changes and medication'],
+        risks: ['High LDL cholesterol and hypertension', 'Smoking doubles coronary artery disease risk', 'Diabetes significantly elevates risk', 'Obesity and physical inactivity are key factors'],
+        confidence: 82
+      },
+      'Heart Failure': {
+        color: '#2C3E50',
+        lt: '#EBF5FB',
+        text: '#1A252F',
+        badge: 'Condition Detected',
+        icon: '💔',
+        desc: 'The model detected risk markers associated with Heart Failure — a condition where the heart cannot pump blood efficiently enough to meet the body\'s needs. Prompt medical attention is advised.',
+        about: ['Heart cannot pump enough blood to body', 'Can affect left, right or both sides of heart', 'Symptoms include breathlessness and fatigue', 'Chronic but manageable with medical care'],
+        risks: ['Previous heart attack history', 'Long-term uncontrolled hypertension', 'Cardiomyopathy and valve disease', 'Severe obesity and type 2 diabetes'],
+        confidence: 76
+      }
+    };
+
+    // Get prediction from the template variable injected by Flask
+    // In actual Flask app: prediction is rendered server-side
+    // For static demo, detect from page or default to Healthy
+    const rawPrediction = document.getElementById('diagnosisName').textContent.trim();
+
+    // Clean up the prediction (Flask will replace it)
+    const prediction = rawPrediction.startsWith('{') ? 'Healthy' : rawPrediction;
+    const data = conditionData[prediction] || conditionData['Healthy'];
+
+    // Apply styles
+    const card = document.getElementById('resultCard');
+    card.style.setProperty('--result-color', data.color);
+    card.style.borderColor = data.color;
+
+    document.getElementById('bgIcon').textContent = data.icon;
+
+    const badge = document.getElementById('diagnosisBadge');
+    badge.textContent = data.badge;
+    badge.style.background = data.lt;
+    badge.style.color = data.text;
+    badge.style.setProperty('--result-color', data.color);
+
+    // Update badge dot color via inline override
+    badge.style.cssText += `--result-color: ${data.color};`;
+
+    document.getElementById('diagnosisDesc').textContent = data.desc;
+
+    // Confidence bar
+    setTimeout(() => {
+      document.getElementById('confFill').style.width = data.confidence + '%';
+      document.getElementById('confFill').style.background = data.color;
+      document.getElementById('confPct').textContent = data.confidence + '%';
+    }, 200);
+
+    // About list
+    document.getElementById('aboutList').innerHTML = data.about
+      .map(a => `<li>${a}</li>`).join('');
+
+    // Risk list
+    document.getElementById('riskList').innerHTML = data.risks
+      .map(r => `<li>${r}</li>`).join('');
+
+    // Colour the arrows
+    document.querySelectorAll('.info-card ul li::before').forEach(() => { });
+    // Use CSS variable approach
+    document.documentElement.style.setProperty('--result-arrow', data.color);
+  </script>
+
+  <!-- ═══════════════════════════════════════════
+       CARDIOBOT — Floating AI Chat Widget
+  ═══════════════════════════════════════════ -->
+  <style>
+    /* ── CHAT LAUNCHER BUTTON ── */
+    #chatLauncher {
+      position: fixed; bottom: 28px; right: 28px; z-index: 1000;
+      width: 60px; height: 60px; border-radius: 50%;
+      background: linear-gradient(135deg, #C0392B, #8E44AD);
+      border: none; cursor: pointer;
+      box-shadow: 0 6px 24px rgba(192,57,43,0.45);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem;
+      transition: transform 0.25s, box-shadow 0.25s;
+      animation: bounceIn 0.6s ease 1.2s both;
+    }
+    #chatLauncher:hover { transform: scale(1.1); box-shadow: 0 10px 32px rgba(192,57,43,0.5); }
+    @keyframes bounceIn {
+      0% { transform: scale(0); opacity: 0; }
+      70% { transform: scale(1.1); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+
+    /* ── CHAT PANEL ── */
+    #chatPanel {
+      position: fixed; bottom: 100px; right: 28px; z-index: 999;
+      width: 380px; max-width: calc(100vw - 40px);
+      height: 520px;
+      background: #fff;
+      border-radius: 24px;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.16);
+      display: flex; flex-direction: column;
+      overflow: hidden;
+      transform: translateY(20px) scale(0.95);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    #chatPanel.open {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* Chat header */
+    .chat-header {
+      background: linear-gradient(135deg, #1C1C1E, #2C2C2E);
+      padding: 1rem 1.25rem;
+      display: flex; align-items: center; gap: 12px;
+      flex-shrink: 0;
+    }
+    .chat-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: linear-gradient(135deg, #C0392B, #8E44AD);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; flex-shrink: 0;
+    }
+    .chat-header-info { flex: 1; }
+    .chat-name { font-size: 0.95rem; font-weight: 600; color: #fff; }
+    .chat-status {
+      font-size: 0.72rem; color: rgba(255,255,255,0.5);
+      display: flex; align-items: center; gap: 5px; margin-top: 2px;
+    }
+    .status-dot {
+      width: 6px; height: 6px; background: #27AE60;
+      border-radius: 50%; animation: blink 1.8s infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .chat-close {
+      background: none; border: none; color: rgba(255,255,255,0.5);
+      font-size: 1.3rem; cursor: pointer; padding: 4px; line-height: 1;
+      transition: color 0.2s;
+    }
+    .chat-close:hover { color: #fff; }
+
+    /* Disease chip */
+    .disease-chip {
+      background: rgba(192,57,43,0.12);
+      border-radius: 0;
+      padding: 0.5rem 1.25rem;
+      font-size: 0.75rem; color: #C0392B;
+      font-weight: 500; flex-shrink: 0;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+
+    /* Messages area */
+    .chat-messages {
+      flex: 1; overflow-y: auto; padding: 1rem;
+      display: flex; flex-direction: column; gap: 10px;
+      scroll-behavior: smooth;
+    }
+    .chat-messages::-webkit-scrollbar { width: 4px; }
+    .chat-messages::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
+
+    .msg {
+      max-width: 88%;
+      padding: 0.65rem 0.9rem;
+      border-radius: 16px;
+      font-size: 0.845rem;
+      line-height: 1.6;
+      animation: msgIn 0.25s ease;
+    }
+    @keyframes msgIn { from { opacity:0; transform: translateY(6px); } to { opacity:1; transform: translateY(0); } }
+
+    .msg.bot {
+      background: #F4F4F4;
+      color: #1C1C1E;
+      border-bottom-left-radius: 4px;
+      align-self: flex-start;
+    }
+    .msg.user {
+      background: linear-gradient(135deg, #C0392B, #8E44AD);
+      color: #fff;
+      border-bottom-right-radius: 4px;
+      align-self: flex-end;
+    }
+
+    /* Typing indicator */
+    .typing-indicator {
+      display: none; align-self: flex-start;
+      background: #F4F4F4; border-radius: 16px; border-bottom-left-radius: 4px;
+      padding: 0.65rem 1rem; gap: 5px;
+      align-items: center;
+    }
+    .typing-indicator.show { display: flex; }
+    .typing-indicator span {
+      width: 7px; height: 7px; background: #aaa;
+      border-radius: 50%;
+      animation: typingDot 1.2s infinite;
+    }
+    .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typingDot { 0%,80%,100%{transform:scale(1)} 40%{transform:scale(1.35)} }
+
+    /* Quick suggestion pills */
+    .suggestions {
+      padding: 0.5rem 1rem 0.25rem;
+      display: flex; gap: 6px; flex-wrap: wrap; flex-shrink: 0;
+    }
+    .suggestion-pill {
+      background: #FDF6F0; border: 1px solid rgba(192,57,43,0.2);
+      color: #C0392B; border-radius: 100px;
+      padding: 0.3rem 0.85rem;
+      font-size: 0.72rem; font-weight: 500;
+      cursor: pointer; transition: all 0.18s;
+      white-space: nowrap;
+    }
+    .suggestion-pill:hover { background: #C0392B; color: #fff; border-color: #C0392B; }
+
+    /* Input area */
+    .chat-input-area {
+      padding: 0.75rem 1rem;
+      border-top: 1px solid rgba(0,0,0,0.07);
+      display: flex; gap: 8px; align-items: flex-end; flex-shrink: 0;
+    }
+    #chatInput {
+      flex: 1; border: 1.5px solid #E5E5E5; border-radius: 12px;
+      padding: 0.6rem 0.85rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem; color: #1C1C1E;
+      resize: none; outline: none; max-height: 80px;
+      transition: border-color 0.2s;
+      line-height: 1.4;
+    }
+    #chatInput:focus { border-color: #C0392B; }
+    #chatSend {
+      width: 38px; height: 38px; border-radius: 10px;
+      background: linear-gradient(135deg, #C0392B, #8E44AD);
+      border: none; cursor: pointer; color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; flex-shrink: 0;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    #chatSend:hover { opacity: 0.85; transform: scale(1.05); }
+    #chatSend:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+    @media (max-width: 460px) {
+      #chatPanel { width: calc(100vw - 24px); right: 12px; bottom: 90px; }
+      #chatLauncher { right: 16px; bottom: 20px; }
+    }
+  </style>
+
+  <!-- Chat Launcher -->
+  <button id="chatLauncher" title="Ask CardioBot" aria-label="Open AI chat">🤖</button>
+
+  <!-- Chat Panel -->
+  <div id="chatPanel" role="dialog" aria-label="CardioBot AI assistant">
+    <div class="chat-header">
+      <div class="chat-avatar">🤖</div>
+      <div class="chat-header-info">
+        <div class="chat-name">CardioBot</div>
+        <div class="chat-status">
+          <span class="status-dot"></span> AI Health Assistant · Online
+        </div>
+      </div>
+      <button class="chat-close" id="chatClose" aria-label="Close chat">✕</button>
+    </div>
+    <div class="disease-chip" id="diseaseChip">🔬 Context: Loading...</div>
+    <div class="chat-messages" id="chatMessages">
+      <!-- Messages injected by JS -->
+    </div>
+    <div class="typing-indicator" id="typingIndicator">
+      <span></span><span></span><span></span>
+    </div>
+    <div class="suggestions" id="suggestions">
+      <button class="suggestion-pill" onclick="sendSuggestion(this)">💊 Medicines used</button>
+      <button class="suggestion-pill" onclick="sendSuggestion(this)">🏥 Treatments available</button>
+      <button class="suggestion-pill" onclick="sendSuggestion(this)">🥗 Preventive measures</button>
+      <button class="suggestion-pill" onclick="sendSuggestion(this)">⚠️ Warning signs</button>
+    </div>
+    <div class="chat-input-area">
+      <textarea id="chatInput" placeholder="Ask about treatment, medicines..." rows="1"></textarea>
+      <button id="chatSend" aria-label="Send message">➤</button>
+    </div>
+  </div>
+
+  <script>
+    // ── CardioBot Logic ──────────────────────────────────────────────────────
+    const detectedDisease = document.getElementById('diagnosisName').textContent.trim()
+      || 'Cardiac Condition';
+
+    // Update disease chip
+    document.getElementById('diseaseChip').textContent =
+      `🔬 Detected condition: ${detectedDisease}`;
+
+    // Toggle panel
+    const panel = document.getElementById('chatPanel');
+    const launcher = document.getElementById('chatLauncher');
+    const closeBtn = document.getElementById('chatClose');
+    let panelOpen = false;
+
+    function toggleChat() {
+      panelOpen = !panelOpen;
+      panel.classList.toggle('open', panelOpen);
+      launcher.textContent = panelOpen ? '✕' : '🤖';
+      if (panelOpen) document.getElementById('chatInput').focus();
+    }
+
+    launcher.addEventListener('click', toggleChat);
+    closeBtn.addEventListener('click', toggleChat);
+
+    // Render a message bubble
+    function appendMsg(text, role) {
+      const msgs = document.getElementById('chatMessages');
+      const div = document.createElement('div');
+      div.className = `msg ${role}`;
+      // Basic markdown: **bold**, bullet lines starting with -/*
+      div.innerHTML = text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/^[-•]\s+(.+)/gm, '<li>$1</li>')
+        .replace(/(<li>.*<\/li>)/s, '<ul style="padding-left:1rem;margin:4px 0">$1</ul>')
+        .replace(/\n/g, '<br>');
+      msgs.appendChild(div);
+      msgs.scrollTop = msgs.scrollHeight;
+    }
+
+    // Send to Flask /chat
+    async function sendMessage(message) {
+      if (!message) return;
+
+      appendMsg(message, 'user');
+      document.getElementById('chatInput').value = '';
+      document.getElementById('chatSend').disabled = true;
+
+      // Show typing dots
+      const typing = document.getElementById('typingIndicator');
+      const msgs = document.getElementById('chatMessages');
+      typing.classList.add('show');
+      msgs.scrollTop = msgs.scrollHeight;
+
+      try {
+        const res = await fetch('/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message, disease: detectedDisease })
+        });
+        const data = await res.json();
+        typing.classList.remove('show');
+        appendMsg(data.reply || data.error || 'Sorry, something went wrong.', 'bot');
+      } catch (err) {
+        typing.classList.remove('show');
+        appendMsg('⚠️ Could not connect to CardioBot. Please try again.', 'bot');
+      }
+      document.getElementById('chatSend').disabled = false;
+    }
+
+    // Send button click
+    document.getElementById('chatSend').addEventListener('click', () => {
+      const msg = document.getElementById('chatInput').value.trim();
+      sendMessage(msg);
+    });
+
+    // Enter key (Shift+Enter for newline)
+    document.getElementById('chatInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        const msg = document.getElementById('chatInput').value.trim();
+        sendMessage(msg);
+      }
+    });
+
+    // Quick suggestion pills
+    function sendSuggestion(btn) {
+      const text = btn.innerText.replace(/^[^\s]+\s/, ''); // strip emoji
+      document.getElementById('suggestions').style.display = 'none'; // hide after first use
+      sendMessage(btn.innerText);
+    }
+
+    // Auto-open with greeting after 1.5s
+    setTimeout(() => {
+      toggleChat();
+      setTimeout(() => {
+        appendMsg(
+          `👋 Hi! I'm **CardioBot**, your AI cardiac assistant.\n\nI see your assessment came back as **${detectedDisease}**. I can help you understand:\n- Available **treatments**\n- **Preventive measures** to take\n- Common **medicines** prescribed\n- Lifestyle changes to consider\n\nWhat would you like to know?`,
+          'bot'
+        );
+      }, 400);
+    }, 1500);
+  </script>
 </body>
-</html>
+</html>

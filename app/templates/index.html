@@ -1,232 +1,680 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HeartSecureX - Heart Disease Prediction</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HeartSecure X — Cardiac Risk Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  <style>
-    :root {
-      --primary: #6c63ff;
-      --secondary: #ff6b6b;
-      --background: #f4f6fb;
-      --card-bg: #ffffff;
-      --text-dark: #222;
-      --text-light: #555;
-      --nav-bg: #2c2c54;
-      --nav-text: #ffffff;
-    }
+  :root {
+    --red:    #C0392B;
+    --red-dk: #922B21;
+    --red-lt: #FADBD8;
+    --cream:  #FDF6F0;
+    --warm:   #F9EBE0;
+    --charcoal: #1C1C1E;
+    --slate:  #4A4A4A;
+    --mid:    #8A8A8A;
+    --border: rgba(28,28,30,0.10);
+    --card:   #FFFFFF;
+    --pulse-size: 14px;
+  }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Poppins", sans-serif; }
-    body {
-      background: var(--background);
-      color: var(--text-dark);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--charcoal);
+    overflow-x: hidden;
+  }
 
-    /* NAVBAR */
-    nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: var(--nav-bg);
-      padding: 1rem 3rem;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 5vw;
+    height: 64px;
+    background: rgba(253,246,240,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.2rem; color: var(--charcoal);
+    text-decoration: none;
+  }
+  .nav-logo .pulse {
+    width: var(--pulse-size); height: var(--pulse-size);
+    background: var(--red);
+    border-radius: 50%;
+    animation: heartbeat 1.4s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  @keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    14%  { transform: scale(1.3); }
+    28%  { transform: scale(1); }
+    42%  { transform: scale(1.2); }
+    70%  { transform: scale(1); }
+  }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    text-decoration: none; color: var(--slate);
+    font-size: 0.9rem; font-weight: 500;
+    letter-spacing: 0.01em;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--red); }
+  .nav-cta {
+    background: var(--red); color: #fff;
+    border: none; border-radius: 100px;
+    padding: 0.5rem 1.4rem;
+    font-size: 0.875rem; font-weight: 500;
+    cursor: pointer; text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+    letter-spacing: 0.01em;
+  }
+  .nav-cta:hover { background: var(--red-dk); transform: translateY(-1px); }
 
-    nav h1 { color: #ffd700; font-size: 1.6rem; font-weight: 700; letter-spacing: 1px; }
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 100px 5vw 60px;
+    gap: 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -200px; right: -200px;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(192,57,43,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--red-lt);
+    color: var(--red-dk);
+    font-size: 0.78rem; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 0.35rem 1rem;
+    border-radius: 100px; margin-bottom: 1.5rem;
+  }
+  .hero-tag span { width: 6px; height: 6px; background: var(--red); border-radius: 50%; }
+  .hero-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2.8rem, 5vw, 4.2rem);
+    line-height: 1.05;
+    color: var(--charcoal);
+    margin-bottom: 1.5rem;
+  }
+  .hero-title em {
+    font-style: italic; color: var(--red);
+  }
+  .hero-desc {
+    font-size: 1.05rem; color: var(--slate);
+    line-height: 1.75;
+    max-width: 480px;
+    margin-bottom: 2.5rem;
+  }
+  .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--charcoal); color: #fff;
+    border: none; border-radius: 100px;
+    padding: 0.85rem 2.2rem;
+    font-size: 0.95rem; font-weight: 500;
+    cursor: pointer; text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn-primary:hover { background: #000; transform: translateY(-2px); }
+  .btn-secondary {
+    background: transparent; color: var(--charcoal);
+    border: 1.5px solid var(--charcoal);
+    border-radius: 100px;
+    padding: 0.85rem 2.2rem;
+    font-size: 0.95rem; font-weight: 500;
+    cursor: pointer; text-decoration: none;
+    transition: all 0.2s;
+  }
+  .btn-secondary:hover { background: var(--charcoal); color: #fff; }
 
-    nav ul { display: flex; list-style: none; gap: 1.8rem; }
+  .hero-stats {
+    display: flex; gap: 2.5rem; margin-top: 3.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+  .stat-item {}
+  .stat-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem; color: var(--charcoal);
+    line-height: 1;
+  }
+  .stat-label { font-size: 0.8rem; color: var(--mid); margin-top: 4px; }
 
-    nav ul li a {
-      color: var(--nav-text);
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.3s;
-    }
+  /* ECG VISUAL */
+  .hero-visual {
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .ecg-card {
+    background: var(--card);
+    border-radius: 24px;
+    padding: 2.5rem;
+    border: 1px solid var(--border);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.06);
+    width: 100%; max-width: 440px;
+  }
+  .ecg-label {
+    font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--mid);
+    margin-bottom: 1rem;
+  }
+  .ecg-svg { width: 100%; overflow: visible; }
+  .ecg-path {
+    fill: none; stroke: var(--red); stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-dasharray: 1200;
+    stroke-dashoffset: 1200;
+    animation: drawECG 3s ease forwards 0.5s, pulseECG 2s ease-in-out infinite 3.5s;
+  }
+  @keyframes drawECG {
+    to { stroke-dashoffset: 0; }
+  }
+  @keyframes pulseECG {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
 
-    nav ul li a:hover { color: var(--secondary); }
+  .ecg-metrics {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .ecg-metric {
+    background: var(--warm);
+    border-radius: 12px; padding: 1rem 1.2rem;
+  }
+  .ecg-metric .label { font-size: 0.72rem; color: var(--mid); margin-bottom: 4px; }
+  .ecg-metric .value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.4rem; color: var(--charcoal);
+  }
+  .ecg-metric .unit { font-size: 0.75rem; color: var(--mid); }
+  .ecg-badge {
+    display: flex; align-items: center; gap: 8px;
+    background: #E8F8F0; border-radius: 100px;
+    padding: 0.5rem 1rem; margin-top: 1.2rem;
+    font-size: 0.82rem; font-weight: 500; color: #1E6B45;
+  }
+  .ecg-badge::before {
+    content: ''; width: 8px; height: 8px;
+    background: #27AE60; border-radius: 50%;
+  }
 
-    #theme-toggle {
-      background: none;
-      border: none;
-      color: #fff;
-      font-size: 1.4rem;
-      cursor: pointer;
-    }
+  /* ── SECTION COMMON ── */
+  section { padding: 100px 5vw; }
+  .section-tag {
+    font-size: 0.78rem; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--red); margin-bottom: 1rem;
+  }
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    color: var(--charcoal); margin-bottom: 1rem;
+    line-height: 1.1;
+  }
+  .section-sub {
+    font-size: 1rem; color: var(--slate);
+    max-width: 520px; line-height: 1.75;
+  }
 
-    /* HERO SECTION */
-    .hero {
-      text-align: center;
-      padding: 4rem 2rem;
-      background: linear-gradient(135deg, #6c63ff 0%, #5a54e2 100%);
-      color: #fff;
-    }
-    .hero h2 { font-size: 2.3rem; margin-bottom: 0.8rem; }
-    .hero p { max-width: 700px; margin: 0 auto; font-size: 1.1rem; }
+  /* ── HOW IT WORKS ── */
+  .how { background: var(--warm); }
+  .how-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem; margin-top: 4rem;
+  }
+  .how-card {
+    background: var(--card); border-radius: 20px;
+    padding: 2rem 1.8rem;
+    border: 1px solid var(--border);
+    position: relative;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .how-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(0,0,0,0.08); }
+  .step-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 3.5rem; color: var(--red-lt);
+    line-height: 1; margin-bottom: 1rem;
+  }
+  .how-card h3 {
+    font-size: 1.1rem; font-weight: 600;
+    color: var(--charcoal); margin-bottom: 0.75rem;
+  }
+  .how-card p { font-size: 0.9rem; color: var(--slate); line-height: 1.7; }
 
-    /* INFO SECTION */
-    main { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3rem; padding: 3rem 1.5rem; }
+  /* ── CONDITIONS ── */
+  .conditions-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem; margin-top: 3.5rem;
+  }
+  .condition-pill {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.5rem 1.4rem;
+    text-align: center;
+    transition: all 0.25s;
+    cursor: default;
+  }
+  .condition-pill:hover {
+    border-color: var(--red);
+    background: var(--red-lt);
+    transform: scale(1.03);
+  }
+  .condition-icon { font-size: 2rem; margin-bottom: 0.6rem; }
+  .condition-pill h4 { font-size: 0.95rem; font-weight: 600; color: var(--charcoal); }
+  .condition-pill p { font-size: 0.8rem; color: var(--mid); margin-top: 4px; }
 
-    .info-section {
-      max-width: 900px;
-      background: #fff;
-      border-radius: 16px;
-      padding: 2.5rem;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.05);
-      line-height: 1.6;
-    }
+  /* ── FEATURES ── */
+  .features { background: var(--charcoal); color: #fff; }
+  .features .section-title { color: #fff; }
+  .features .section-tag { color: #E8A09A; }
+  .features .section-sub { color: rgba(255,255,255,0.6); }
+  .features-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1px; margin-top: 4rem;
+    background: rgba(255,255,255,0.08);
+    border-radius: 20px; overflow: hidden;
+  }
+  .feat-item {
+    background: var(--charcoal);
+    padding: 2rem 1.8rem;
+    transition: background 0.2s;
+  }
+  .feat-item:hover { background: #2C2C2E; }
+  .feat-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    background: rgba(192,57,43,0.2);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 1.2rem;
+    font-size: 1.3rem;
+  }
+  .feat-item h3 { font-size: 1rem; font-weight: 600; color: #fff; margin-bottom: 0.5rem; }
+  .feat-item p { font-size: 0.875rem; color: rgba(255,255,255,0.5); line-height: 1.65; }
 
-    .info-section h3 {
-      color: var(--primary);
-      margin-bottom: 1rem;
-      font-size: 1.4rem;
-    }
+  /* ── CTA ── */
+  .cta-section {
+    text-align: center; background: var(--red);
+    padding: 80px 5vw;
+  }
+  .cta-section .section-title { color: #fff; margin-bottom: 1rem; }
+  .cta-section p { color: rgba(255,255,255,0.8); font-size: 1rem; margin-bottom: 2.5rem; }
+  .btn-white {
+    background: #fff; color: var(--red);
+    border: none; border-radius: 100px;
+    padding: 0.9rem 2.4rem;
+    font-size: 0.95rem; font-weight: 600;
+    cursor: pointer; text-decoration: none;
+    transition: all 0.2s;
+  }
+  .btn-white:hover { transform: scale(1.04); box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
 
-    .info-section p, .info-section ul {
-      color: var(--text-light);
-      font-size: 0.95rem;
-      margin-bottom: 1rem;
-    }
+  /* ── FOOTER ── */
+  footer {
+    background: #111; color: rgba(255,255,255,0.4);
+    text-align: center; padding: 2rem;
+    font-size: 0.82rem;
+  }
+  footer span { color: var(--red); }
 
-    .info-section ul { margin-left: 1.5rem; }
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero-visual { display: none; }
+    .how-grid, .features-grid { grid-template-columns: 1fr; }
+    .features-grid { background: none; gap: 1rem; }
+    .feat-item { border-radius: 16px; background: #2A2A2C; }
+  }
+  @media (max-width: 600px) {
+    .nav-links { display: none; }
+    .hero-stats { flex-wrap: wrap; gap: 1.5rem; }
+  }
+  .footer {
+  background: #111;
+  color: rgba(255,255,255,0.7);
+  padding: 60px 5vw 20px;
+}
 
-    /* BUTTON */
-    .btn-primary {
-      display: inline-block;
-      margin-top: 1.5rem;
-      padding: 0.9rem 2rem;
-      background: var(--primary);
-      color: #fff;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: 600;
-      transition: 0.3s;
-    }
-    .btn-primary:hover {
-      background: #574bff;
-      box-shadow: 0 4px 12px rgba(108, 99, 255, 0.3);
-    }
+.footer-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
 
-    /* FOOTER */
-    footer {
-      background: #2c2c54;
-      color: #fff;
-      padding: 2rem 1rem;
-      text-align: center;
-    }
+.footer-col {
+  flex: 1;
+  min-width: 220px;
+}
 
-    .footer-container {
-      display: flex;
-      justify-content: space-around;
-      flex-wrap: wrap;
-      gap: 2rem;
-      margin-bottom: 1rem;
-    }
+.footer-col h2 {
+  color: #fff;
+  font-family: 'DM Serif Display', serif;
+  margin-bottom: 10px;
+}
 
-    .footer-col h4 { color: #ffd700; margin-bottom: 1rem; }
-    .footer-col ul { list-style: none; }
-    .footer-col ul li a {
-      color: #ddd;
-      text-decoration: none;
-      display: block;
-      margin: 0.4rem 0;
-      transition: color 0.3s;
-    }
-    .footer-col ul li a:hover { color: var(--secondary); }
+.footer-col h3 {
+  color: #C0392B;
+  margin-bottom: 12px;
+  font-size: 1rem;
+}
 
-    .social-icons a {
-      color: #fff;
-      margin: 0 0.5rem;
-      font-size: 1.2rem;
-      transition: color 0.3s;
-    }
-    .social-icons a:hover { color: var(--secondary); }
+.footer-col p {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: rgba(255,255,255,0.5);
+}
 
-    .footer-bottom { font-size: 0.9rem; color: #bbb; }
+.footer-col ul {
+  list-style: none;
+  padding: 0;
+}
 
-    @media (max-width: 600px) {
-      nav { flex-direction: column; gap: 0.6rem; }
-      .info-section { padding: 1.8rem; }
-    }
-  </style>
+.footer-col ul li {
+  margin-bottom: 8px;
+  font-size: 0.85rem;
+}
+
+.footer-icons a {
+  font-size: 22px;
+  margin-right: 15px;
+  color: rgba(255,255,255,0.7);
+  transition: 0.3s;
+}
+
+.footer-icons a:hover {
+  color: #C0392B;
+  transform: scale(1.2);
+}
+
+.footer-bottom {
+  text-align: center;
+  margin-top: 30px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.4);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .footer-container {
+    flex-direction: column;
+  }
+}
+</style>
 </head>
 <body>
-  <nav>
-    <h1>HeartSecureX</h1>
-    <ul>
-      <li><a href="/">Home</a></li>
-      <li><a href="{{ url_for('about') }}">About</a></li>
-    </ul>
-    <button id="theme-toggle"><i class="fa-solid fa-moon"></i></button>
-  </nav>
 
-  <section class="hero">
-    <h2>Your AI-Powered Heart Health Companion</h2>
-    <p>HeartSecureX uses advanced machine learning models to help predict heart disease risk and promote preventive care.</p>
-  </section>
+<!-- NAV -->
+<nav>
+  <a href="/" class="nav-logo">
+    <div class="pulse"></div>
+    HeartSecureX<strong>&nbsp;</strong>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#conditions">Conditions</a></li>
+    <li><a href="/symptoms">Symptoms</a></li>
+    <li><a href="/about">About</a></li>
+  </ul>
+  {% if user %}
+  <div style="display:flex;align-items:center;gap:0.75rem">
+    <span style="font-size:0.85rem;color:var(--slate);">👋 <strong>{{ user.name.split()[0] }}</strong></span>
+    <a href="/profile" class="nav-cta" style="background:var(--charcoal)">My Profile</a>
+    <a href="/logout" style="font-size:0.85rem;color:var(--mid);text-decoration:none;">Sign out</a>
+  </div>
+  {% else %}
+  <div style="display:flex;gap:0.75rem;align-items:center">
+    <a href="/login" style="font-size:0.875rem;font-weight:500;color:var(--slate);text-decoration:none;">Sign In</a>
+    <a href="/register" class="nav-cta">Get Started →</a>
+  </div>
+  {% endif %}
+</nav>
 
-  <main>
-    <div class="info-section">
-      <h3>What is HeartSecureX?</h3>
-      <p><strong>HeartSecureX</strong> is an intelligent heart disease prediction system designed to empower individuals and healthcare providers with early risk insights. By analyzing vital parameters and lifestyle factors, it provides a personalized probability of heart disease risk.</p>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    {% if user %}
+    <div class="hero-tag"><span></span> Welcome back, {{ user.name.split()[0] }}!</div>
+    <h1 class="hero-title">
+      How's Your Health ?<br />
+      <em>{{ user.name.split()[0] }}.</em>
+    </h1>
+    {% else %}
+    <div class="hero-tag"><span></span> AI-Powered Cardiac Intelligence</div>
+    <h1 class="hero-title">
+      Know your heart.<br />
+      Before it<br />
+      <em>tells you.</em>
+    </h1>
+    {% endif %}
+    <p class="hero-desc">
+      HeartSecure X uses a clinically-informed machine learning model to assess
+      your risk for five cardiac conditions — from a single set of health inputs.
+    </p>
+    <div class="hero-actions">
+      <a href="/symptoms" class="btn-primary">Start Free Assessment</a>
+      <a href="#how" class="btn-secondary">Learn how it works</a>
     </div>
-
-    <div class="info-section">
-      <h3>Understanding Heart Diseases</h3>
-      <p>Heart diseases remain the leading cause of death globally. Early detection and management are crucial to preventing severe complications.</p>
-      <ul>
-        <li><strong>Coronary artery disease:</strong> Blocked heart arteries.</li>
-        <li><strong>Heart attack:</strong> Interrupted blood flow to heart muscles.</li>
-        <li><strong>Arrhythmia:</strong> Irregular heart rhythms.</li>
-        <li><strong>Heart failure:</strong> Reduced pumping ability.</li>
-      </ul>
-    </div>
-
-    <div class="info-section">
-      <h3>How HeartSecureX Works</h3>
-      <ul>
-        <li>Collects user input through a secure form.</li>
-        <li>Processes data with a trained AI model.</li>
-        <li>Provides instant heart disease risk prediction.</li>
-      </ul>
-    </div>
-  </main>
-
-  <footer>
-    <div class="footer-container">
-      <div class="footer-col">
-        <h4>HeartSecureX</h4>
-        <p>Empowering health through AI-driven insights.</p>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">5</div>
+        <div class="stat-label">Conditions detected</div>
       </div>
-      <div class="footer-col">
-        <h4>Quick Links</h4>
-        <ul>
-          <li><a href="/">Home</a></li>
-          <li><a href="{{ url_for('register') }}">Sign up / Login</a></li>
-          <li><a href="{{ url_for('about') }}">About Us</a></li>
-        </ul>
+      <div class="stat-item">
+        <div class="stat-num">15</div>
+        <div class="stat-label">Clinical parameters</div>
       </div>
-      <div class="footer-col">
-        <h4>Contact</h4>
-        <p>Email: support@heartsecurex.com</p>
-        <p>Phone: +91-9876543210</p>
-        <div class="social-icons">
-          <a href="#"><i class="fab fa-facebook"></i></a>
-          <a href="#"><i class="fab fa-twitter"></i></a>
-          <a href="#"><i class="fab fa-linkedin"></i></a>
+      <div class="stat-item">
+        <div class="stat-num">RF</div>
+        <div class="stat-label">Random forest model</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="ecg-card">
+      <div class="ecg-label">Live ECG simulation</div>
+      <svg class="ecg-svg" viewBox="0 0 360 90" height="90">
+        <path class="ecg-path" d="
+          M0,45 L40,45
+          L50,45 L55,20 L60,70 L65,45
+          L80,45 L90,45
+          L95,45 L97,38 L100,10 L103,70 L106,45
+          L115,45
+          L120,45 L125,35 L130,55 L135,45
+          L155,45
+          L165,45 L170,20 L175,70 L180,45
+          L195,45 L205,45
+          L210,45 L212,38 L215,10 L218,70 L221,45
+          L235,45
+          L240,45 L245,35 L250,55 L255,45
+          L280,45
+          L290,45 L295,20 L300,70 L305,45
+          L320,45 L360,45
+        "/>
+      </svg>
+      <div class="ecg-metrics">
+        <div class="ecg-metric">
+          <div class="label">Heart rate</div>
+          <div class="value">72 <span class="unit">bpm</span></div>
+        </div>
+        <div class="ecg-metric">
+          <div class="label">Blood pressure</div>
+          <div class="value">120<span class="unit">/80</span></div>
+        </div>
+        <div class="ecg-metric">
+          <div class="label">Cholesterol</div>
+          <div class="value">195 <span class="unit">mg/dL</span></div>
+        </div>
+        <div class="ecg-metric">
+          <div class="label">Blood sugar</div>
+          <div class="value">98 <span class="unit">mg/dL</span></div>
         </div>
       </div>
+      <div class="ecg-badge">Model output: Healthy — Low risk profile</div>
     </div>
-    <div class="footer-bottom">
-      &copy; 2025 HeartSecureX. All rights reserved.
-    </div>
-  </footer>
+  </div>
+</section>
 
-  <script src="{{ url_for('static', filename='script.js') }}"></script>
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="section-tag">The process</div>
+  <h2 class="section-title">Three steps to your<br/>cardiac profile</h2>
+  <p class="section-sub">No wearables. No labs. Just the clinical data you likely already know.</p>
+
+  <div class="how-grid">
+    <div class="how-card">
+      <div class="step-num">01</div>
+      <h3>Enter your health data</h3>
+      <p>Provide 15 clinical parameters including age, cholesterol, blood pressure, lifestyle habits, and medical history.</p>
+    </div>
+    <div class="how-card">
+      <div class="step-num">02</div>
+      <h3>AI analyses your profile</h3>
+      <p>Our Random Forest model, trained on thousands of patient records, processes your inputs through a calibrated preprocessing pipeline.</p>
+    </div>
+    <div class="how-card">
+      <div class="step-num">03</div>
+      <h3>Receive your cardiac result</h3>
+      <p>Instantly see whether you may be at risk for Angina, Arrhythmia, CAD, Heart Failure — or receive a Healthy classification.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONDITIONS -->
+<section id="conditions">
+  <div class="section-tag">What we detect</div>
+  <h2 class="section-title">Five cardiac conditions<br/>screened in seconds</h2>
+  <p class="section-sub">HeartSecure X classifies risk across the most prevalent cardiac diagnoses.</p>
+
+  <div class="conditions-grid">
+    <div class="condition-pill">
+      <div class="condition-icon">🫀</div>
+      <h4>Angina</h4>
+      <p>Chest pain from restricted blood flow</p>
+    </div>
+    <div class="condition-pill">
+      <div class="condition-icon">⚡</div>
+      <h4>Arrhythmia</h4>
+      <p>Irregular heartbeat patterns</p>
+    </div>
+    <div class="condition-pill">
+      <div class="condition-icon">🩺</div>
+      <h4>Coronary Artery Disease</h4>
+      <p>Plaque buildup in coronary arteries</p>
+    </div>
+    <div class="condition-pill">
+      <div class="condition-icon">✅</div>
+      <h4>Healthy</h4>
+      <p>No significant cardiac risk detected</p>
+    </div>
+    <div class="condition-pill">
+      <div class="condition-icon">💔</div>
+      <h4>Heart Failure</h4>
+      <p>Reduced cardiac pumping efficiency</p>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+  <div class="section-tag">Why HeartSecure X</div>
+  <h2 class="section-title">Built on clinical<br/>machine learning</h2>
+  <p class="section-sub">Engineered with rigorous preprocessing and an interpretable Random Forest architecture.</p>
+
+  <div class="features-grid">
+    <div class="feat-item">
+      <div class="feat-icon">🧠</div>
+      <h3>Random forest model</h3>
+      <p>Ensemble learning across hundreds of decision trees ensures robust, generalizable predictions.</p>
+    </div>
+    <div class="feat-item">
+      <div class="feat-icon">⚙️</div>
+      <h3>Calibrated preprocessor</h3>
+      <p>Dedicated sklearn pipeline normalises numerical and categorical inputs exactly as training data.</p>
+    </div>
+    <div class="feat-item">
+      <div class="feat-icon">📊</div>
+      <h3>15 clinical features</h3>
+      <p>From cholesterol and blood pressure to diabetes, obesity, and exercise-induced angina.</p>
+    </div>
+    <div class="feat-item">
+      <div class="feat-icon">🔒</div>
+      <h3>Privacy first</h3>
+      <p>Your health data is not stored or shared. Predictions run server-side and results are session-only.</p>
+    </div>
+    <div class="feat-item">
+      <div class="feat-icon">⚡</div>
+      <h3>Instant results</h3>
+      <p>Sub-second inference. Enter your data, get your cardiac classification immediately.</p>
+    </div>
+    <div class="feat-item">
+      <div class="feat-icon">🩻</div>
+      <h3>Multi-class output</h3>
+      <p>Unlike binary classifiers, HeartSecure X distinguishes between five distinct cardiac outcomes.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2 class="section-title">Ready to assess your cardiac risk?</h2>
+  <p>Takes under two minutes. No sign-up required.</p>
+  <a href="/symptoms" class="btn-white">Start Your Assessment →</a>
+</section>
+
+<!-- FOOTER -->
+<footer>   <!-- Brand -->
+    <div class="footer-col">
+      <h2>HeartSecure X</h2>
+      <p>AI-powered cardiac risk prediction system designed for early detection and smarter healthcare decisions.</p>
+    </div>
+
+    <!-- Team -->
+    <div class="footer-col">
+      <h3>Team Members</h3>
+      <ul>
+        <li>Aditya Bawane</li>
+      </ul>
+    </div>
+
+    <!-- Social -->
+    <div class="footer-col">
+      <h3>Connect</h3>
+      <div class="footer-icons">
+        <a href="https://github.com/Aditya051105" target="_blank">
+          <i class="fab fa-github"></i>
+        </a>
+        <a href="https://www.linkedin.com/in/aditya-bawane-8ab678356/" target="_blank">
+          <i class="fab fa-linkedin"></i>
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <p>© 2025 <span>HeartSecure X</span> · AI cardiac screening tool · Not a substitute for medical advice</p>
+</footer>
+
 </body>
 </html>

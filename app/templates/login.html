@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In — HeartSecure X</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --red: #C0392B; --red-dk: #922B21; --red-lt: #FADBD8;
+      --cream: #FDF6F0; --charcoal: #1C1C1E; --slate: #4A4A4A;
+      --mid: #8A8A8A; --border: rgba(28,28,30,0.10);
+    }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1C1C1E 0%, #2C1A1A 50%, #1C1C1E 100%);
+      display: flex; align-items: center; justify-content: center;
+      padding: 2rem;
+      position: relative; overflow: hidden;
+    }
+    /* Animated background orbs */
+    body::before, body::after {
+      content: ''; position: absolute; border-radius: 50%;
+      filter: blur(80px); pointer-events: none; z-index: 0;
+    }
+    body::before {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(192,57,43,0.15), transparent 70%);
+      top: -100px; right: -100px;
+      animation: float 8s ease-in-out infinite;
+    }
+    body::after {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(142,68,173,0.1), transparent 70%);
+      bottom: -50px; left: -50px;
+      animation: float 10s ease-in-out infinite reverse;
+    }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-20px)} }
+
+    /* NAV */
+    .top-bar {
+      position: fixed; top: 0; left: 0; right: 0;
+      padding: 0 5vw; height: 64px;
+      display: flex; align-items: center;
+      background: rgba(28,28,30,0.6); backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.06); z-index: 10;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-family: 'DM Serif Display', serif; font-size: 1.15rem;
+      color: #fff; text-decoration: none;
+    }
+    .pulse {
+      width: 12px; height: 12px; background: var(--red);
+      border-radius: 50%; animation: hb 1.4s infinite;
+    }
+    @keyframes hb { 0%,100%{transform:scale(1)} 14%{transform:scale(1.35)} 28%{transform:scale(1)} 42%{transform:scale(1.2)} }
+
+    /* CARD */
+    .auth-card {
+      position: relative; z-index: 1;
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(24px);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 28px;
+      padding: 3rem 2.5rem;
+      width: 100%; max-width: 440px;
+      animation: slideUp 0.5s ease both;
+    }
+    @keyframes slideUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+
+    .card-icon {
+      width: 56px; height: 56px; border-radius: 16px;
+      background: linear-gradient(135deg, var(--red), #8E44AD);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem; margin-bottom: 1.5rem;
+    }
+    .card-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2rem; color: #fff; margin-bottom: 0.4rem;
+    }
+    .card-sub { font-size: 0.9rem; color: rgba(255,255,255,0.45); margin-bottom: 2rem; }
+
+    /* FLASH MESSAGES */
+    .flash-msg {
+      border-radius: 12px; padding: 0.75rem 1rem;
+      font-size: 0.85rem; margin-bottom: 1.25rem;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .flash-msg.success { background: rgba(39,174,96,0.15); color: #27AE60; border: 1px solid rgba(39,174,96,0.3); }
+    .flash-msg.error   { background: rgba(192,57,43,0.15);  color: #E8816D; border: 1px solid rgba(192,57,43,0.3); }
+
+    /* FORM */
+    .form-group { margin-bottom: 1.1rem; }
+    label { display: block; font-size: 0.78rem; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: rgba(255,255,255,0.45); margin-bottom: 0.5rem; }
+    input[type="email"], input[type="password"], input[type="text"] {
+      width: 100%; padding: 0.8rem 1rem;
+      background: rgba(255,255,255,0.06);
+      border: 1.5px solid rgba(255,255,255,0.10);
+      border-radius: 12px; color: #fff;
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+      outline: none; transition: border-color 0.2s, background 0.2s;
+    }
+    input::placeholder { color: rgba(255,255,255,0.25); }
+    input:focus { border-color: var(--red); background: rgba(192,57,43,0.08); }
+
+    .btn-submit {
+      width: 100%; padding: 0.9rem;
+      background: linear-gradient(135deg, var(--red), #8E44AD);
+      border: none; border-radius: 12px; color: #fff;
+      font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 600;
+      cursor: pointer; margin-top: 0.5rem;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .btn-submit:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    .divider {
+      text-align: center; color: rgba(255,255,255,0.2);
+      font-size: 0.8rem; margin: 1.25rem 0; position: relative;
+    }
+    .divider::before, .divider::after {
+      content: ''; position: absolute; top: 50%;
+      width: 38%; height: 1px; background: rgba(255,255,255,0.1);
+    }
+    .divider::before { left: 0; }
+    .divider::after  { right: 0; }
+
+    .alt-link {
+      text-align: center; font-size: 0.875rem;
+      color: rgba(255,255,255,0.4);
+    }
+    .alt-link a { color: #E8816D; text-decoration: none; font-weight: 500; }
+    .alt-link a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <a href="/" class="nav-logo"><div class="pulse"></div>HeartSecure&nbsp;<strong>X</strong></a>
+  </div>
+
+  <div class="auth-card">
+    <div class="card-icon">🔐</div>
+    <h1 class="card-title">Welcome back</h1>
+    <p class="card-sub">Sign in to your HeartSecure X account</p>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class="flash-msg {{ category }}">
+          {{ '✓' if category == 'success' else '⚠' }} {{ message }}
+        </div>
+      {% endfor %}
+    {% endwith %}
+
+    <form method="POST" action="/login">
+      <div class="form-group">
+        <label for="email">Email address</label>
+        <input type="email" id="email" name="email" placeholder="you@example.com" required />
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="••••••••" required />
+      </div>
+      <button type="submit" class="btn-submit">Sign In →</button>
+    </form>
+
+    <div class="divider">or</div>
+    <p class="alt-link">Don't have an account? <a href="/register">Create one free</a></p>
+  </div>
+</body>
+</html>

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Profile — HeartSecure X</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --red: #C0392B; --red-dk: #922B21; --red-lt: #FADBD8;
+      --cream: #FDF6F0; --warm: #F9EBE0;
+      --charcoal: #1C1C1E; --slate: #4A4A4A; --mid: #8A8A8A;
+      --border: rgba(28,28,30,0.10); --card: #FFFFFF;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--charcoal); }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5vw; height: 64px;
+      background: rgba(253,246,240,0.88); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-family: 'DM Serif Display', serif; font-size: 1.15rem;
+      color: var(--charcoal); text-decoration: none;
+    }
+    .pulse { width: 12px; height: 12px; background: var(--red); border-radius: 50%; animation: hb 1.4s infinite; }
+    @keyframes hb { 0%,100%{transform:scale(1)} 14%{transform:scale(1.35)} 28%{transform:scale(1)} 42%{transform:scale(1.2)} }
+    .nav-right { display: flex; align-items: center; gap: 1rem; }
+    .btn-nav {
+      background: var(--charcoal); color: #fff; border: none;
+      border-radius: 100px; padding: 0.5rem 1.4rem;
+      font-size: 0.875rem; font-weight: 500; cursor: pointer;
+      text-decoration: none; transition: background 0.2s;
+    }
+    .btn-nav:hover { background: #000; }
+    .btn-nav.outline {
+      background: transparent; color: var(--charcoal);
+      border: 1.5px solid var(--border);
+    }
+    .btn-nav.outline:hover { border-color: var(--charcoal); }
+
+    /* PAGE */
+    .profile-page {
+      max-width: 900px; margin: 0 auto;
+      padding: 5.5rem 2rem 4rem;
+    }
+
+    /* HERO BANNER */
+    .profile-banner {
+      background: linear-gradient(135deg, var(--charcoal), #2C2C2E);
+      border-radius: 28px; padding: 2.5rem;
+      display: flex; align-items: center; gap: 2rem;
+      margin-bottom: 2rem;
+      animation: fadeUp 0.5s ease both;
+      position: relative; overflow: hidden;
+    }
+    .profile-banner::before {
+      content: '';
+      position: absolute; top: -60px; right: -60px;
+      width: 250px; height: 250px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(192,57,43,0.2), transparent 70%);
+      pointer-events: none;
+    }
+    .avatar {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--red), #8E44AD);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; font-weight: 700; color: #fff;
+      flex-shrink: 0; font-family: 'DM Serif Display', serif;
+    }
+    .banner-info { flex: 1; }
+    .banner-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.8rem; color: #fff; margin-bottom: 0.3rem;
+    }
+    .banner-email { font-size: 0.875rem; color: rgba(255,255,255,0.45); margin-bottom: 0.6rem; }
+    .member-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(39,174,96,0.15); border: 1px solid rgba(39,174,96,0.3);
+      color: #27AE60; border-radius: 100px;
+      padding: 0.3rem 0.85rem; font-size: 0.75rem; font-weight: 600;
+    }
+    .member-badge::before { content:''; width:6px; height:6px; background:#27AE60; border-radius:50%; }
+
+    /* STATS ROW */
+    .stats-row {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1rem; margin-bottom: 2rem;
+      animation: fadeUp 0.5s ease both 0.1s;
+    }
+    .stat-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 20px; padding: 1.5rem 1.6rem;
+      text-align: center;
+    }
+    .stat-icon { font-size: 1.6rem; margin-bottom: 0.5rem; }
+    .stat-num {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2rem; color: var(--charcoal);
+    }
+    .stat-lbl { font-size: 0.78rem; color: var(--mid); margin-top: 4px; }
+
+    /* SECTION HEADING */
+    .section-heading {
+      font-size: 0.78rem; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--mid); margin-bottom: 1rem;
+    }
+
+    /* HISTORY TABLE */
+    .history-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 20px; overflow: hidden;
+      margin-bottom: 2rem;
+      animation: fadeUp 0.5s ease both 0.2s;
+    }
+    .history-card .card-header {
+      padding: 1.2rem 1.6rem;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem; font-weight: 600; color: var(--charcoal);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    thead tr { background: var(--warm); }
+    th, td { padding: 0.85rem 1.2rem; text-align: left; font-size: 0.82rem; }
+    th { font-weight: 600; color: var(--mid); letter-spacing: 0.05em; text-transform: uppercase; }
+    td { color: var(--slate); border-top: 1px solid var(--border); }
+    .result-pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      border-radius: 100px; padding: 0.25rem 0.75rem;
+      font-size: 0.75rem; font-weight: 600;
+    }
+    .pill-healthy   { background: #E8F8F0; color: #1E6B45; }
+    .pill-angina    { background: #FEF3C7; color: #B7770D; }
+    .pill-arrhythmia{ background: #F3E5F5; color: #6A1B9A; }
+    .pill-cad       { background: #FADBD8; color: #922B21; }
+    .pill-hf        { background: #EBF5FB; color: #1A252F; }
+
+    /* ACTIONS */
+    .action-row {
+      display: flex; gap: 1rem; flex-wrap: wrap;
+      animation: fadeUp 0.5s ease both 0.3s;
+    }
+    .btn-primary {
+      background: var(--red); color: #fff; border: none;
+      border-radius: 100px; padding: 0.85rem 2rem;
+      font-size: 0.9rem; font-weight: 500; cursor: pointer;
+      text-decoration: none; transition: all 0.2s;
+    }
+    .btn-primary:hover { background: var(--red-dk); transform: translateY(-1px); }
+    .btn-outline {
+      background: transparent; color: var(--charcoal);
+      border: 1.5px solid var(--border); border-radius: 100px;
+      padding: 0.85rem 2rem; font-size: 0.9rem; font-weight: 500;
+      cursor: pointer; text-decoration: none; transition: all 0.2s;
+    }
+    .btn-outline:hover { border-color: var(--charcoal); }
+    .btn-danger {
+      background: transparent; color: var(--red);
+      border: 1.5px solid rgba(192,57,43,0.3); border-radius: 100px;
+      padding: 0.85rem 2rem; font-size: 0.9rem; font-weight: 500;
+      cursor: pointer; text-decoration: none; transition: all 0.2s;
+    }
+    .btn-danger:hover { background: var(--red-lt); border-color: var(--red); }
+
+    .no-history {
+      padding: 3rem; text-align: center;
+      color: var(--mid); font-size: 0.9rem;
+    }
+    .no-history .icon { font-size: 2rem; margin-bottom: 0.5rem; }
+
+    @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+    @media (max-width: 640px) {
+      .stats-row { grid-template-columns: 1fr 1fr; }
+      .profile-banner { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/" class="nav-logo"><div class="pulse"></div>HeartSecureX&nbsp;<strong></strong></a>
+    <div class="nav-right">
+      <a href="/symptoms" class="btn-nav">Run Assessment</a>
+      <a href="/logout" class="btn-nav outline">Sign Out</a>
+    </div>
+  </nav>
+
+  <div class="profile-page">
+    <!-- BANNER -->
+    <div class="profile-banner">
+      <div class="avatar">{{ user.name[0].upper() }}</div>
+      <div class="banner-info">
+        <div class="banner-name">{{ user.name }}</div>
+        <div class="banner-email">{{ user.email }}</div>
+        <div class="member-badge">Active Member</div>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon">📋</div>
+        <div class="stat-num">{{ history|length }}</div>
+        <div class="stat-lbl">Assessments run</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📅</div>
+        <div class="stat-num">{{ user.created_at[:10] if user.created_at else '—' }}</div>
+        <div class="stat-lbl">Member since</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">❤️</div>
+        <div class="stat-num">{{ history[0].prediction if history else '—' }}</div>
+        <div class="stat-lbl">Last result</div>
+      </div>
+    </div>
+
+    <!-- HISTORY -->
+    <div class="section-heading">Recent assessments</div>
+    <div class="history-card">
+      <div class="card-header">
+        <span>Assessment History</span>
+        <span style="color:var(--mid);font-size:0.8rem">Last 5 records</span>
+      </div>
+      {% if history %}
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Age</th>
+            <th>Result</th>
+            <th>Cholesterol</th>
+            <th>BP</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in history %}
+          <tr>
+            <td>{{ row.timestamp[:10] if row.timestamp else '—' }}</td>
+            <td>{{ row.age|int }}</td>
+            <td>
+              {% set pill_map = {
+                'Healthy': 'pill-healthy',
+                'Angina': 'pill-angina',
+                'Arrhythmia': 'pill-arrhythmia',
+                'Coronary Artery Disease': 'pill-cad',
+                'Heart Failure': 'pill-hf'
+              } %}
+              <span class="result-pill {{ pill_map.get(row.prediction, 'pill-angina') }}">
+                {{ row.prediction }}
+              </span>
+            </td>
+            <td>{{ row.cholesterol }} mg/dL</td>
+            <td>{{ row.blood_pressure }} mmHg</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="no-history">
+        <div class="icon">🩺</div>
+        <p>No assessments yet. Run your first cardiac screening!</p>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="action-row">
+      <a href="/symptoms" class="btn-primary">Run New Assessment →</a>
+      <a href="/" class="btn-outline">← Back to Home</a>
+      <a href="/logout" class="btn-danger">Sign Out</a>
+    </div>
+  </div>
+</body>
+</html>
